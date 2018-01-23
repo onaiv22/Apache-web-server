@@ -1,0 +1,42 @@
+- hosts: webservers
+  user: femistone
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+
+  tasks:
+   - name: Ensure that Apache is installed
+     yum: name=httpd state=present
+     when: ansible_os_family == "RedHat"
+
+   - name: Start Apache Services
+     service: name=httpd enabled=yes state=started
+
+   - name: Deploy configuration file
+     template: src=templates/httpd.j2 dest=/etc/httpd.conf
+     notify:
+       - Restart Apache
+
+  handlers:
+      - name: Restart Apache
+        service: name=httpd state=restarted
+
+- hosts: dbservers
+  become: yes
+  user: femistone
+  gather_facts: no
+
+  tasks:
+   - name: Ensure MySQL is installed
+     yum: name=mysql-server state=present
+   - name: start MySQL
+     service: name=mysqld state=started
+     when: ansible_os_family=="RedHat"
+
+- hosts: webservers:dbservers
+  become: yes
+  become_user: femistone
+
+  tasks:
+   - name: stop IPTABLES NOW!!!
+     service: name=iptables state=stopped
