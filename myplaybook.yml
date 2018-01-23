@@ -13,7 +13,6 @@
      service: name=httpd enabled=yes state=started
 
    - name: Deploy configuration file
-     template: src=templates/httpd.j2 dest=/etc/httpd.conf
      notify:
        - Restart Apache
 
@@ -24,7 +23,7 @@
 - hosts: dbservers
   become: yes
   user: femistone
-  gather_facts: no
+  gather_facts: yes
 
   tasks:
    - name: Ensure MySQL is installed
