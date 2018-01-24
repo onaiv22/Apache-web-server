@@ -3,6 +3,7 @@
   become: yes
   become_method: sudo
   gather_facts: yes
+  #var:
 
   tasks:
    - name: Ensure that Apache is installed
@@ -24,14 +25,36 @@
   become: yes
   user: femistone
   gather_facts: yes
+  vars:
+    [client]
+    port: 3306
+    socket: /tmp/mysql.sock
+    [mysqld]
+    port: 3306
+    socket: /tmp/mysql.sock
+    key-buffer-size: 16M
+    max_allowed_packet: 8M
+    [mysqldump]
+    quick
+    
 
   tasks:
    - name: Ensure MySQL is installed
      yum: name=mysql-server state=present
+   
    - name: start MySQL
      service: name=mysqld state=started
-     when: ansible_os_family=="RedHat"
-
+     when: ansible_os_family=="RedHat"  
+     
+   - name: Deploy mysql configuration
+     template: src=/templates/mysql_conf.j2 dest=/etc/mysql/conf/mysql.conf
+     notify:
+       Restart Mysql
+  handler:
+    - name: Restart Mysql
+      service: name=mysqld state=started
+   
+   
 - hosts: webservers:dbservers
   become: yes
   become_user: femistone
