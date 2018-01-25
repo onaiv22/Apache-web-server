@@ -7,7 +7,7 @@
     port: 80
     protocol: http
     ServerName: localhost:80
-    DocumentRoot: /var/www/html
+    doc_root: /var/www/html
   var_prompt:  
 
   tasks:
