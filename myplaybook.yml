@@ -7,17 +7,21 @@
     port: 80
     protocol: http
     ServerName: localhost:80
-    DocumentRoot: /var/www
+    DocumentRoot: /var/www/html
 
   tasks:
    - name: Ensure that Apache is installed
      yum: name=httpd state=present
      when: ansible_os_family == "RedHat"
-
+     
    - name: Start Apache Services
      service: name=httpd enabled=yes state=started
+     
+   - name:copy file to remote server
+     file: path={{ documentRoot }}/index.html
 
    - name: Deploy configuration file
+     template: src=templates/httpd.js dest=/etc/httpd/conf/httpd.conf
      notify:
        - Restart Apache
 
