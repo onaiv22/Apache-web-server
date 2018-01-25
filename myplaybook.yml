@@ -8,6 +8,7 @@
     protocol: http
     ServerName: localhost:80
     DocumentRoot: /var/www/html
+  var_prompt:  
 
   tasks:
    - name: Ensure that Apache is installed
@@ -17,8 +18,8 @@
    - name: Start Apache Services
      service: name=httpd enabled=yes state=started
      
-   - name:copy file to remote server
-     file: path={{ documentRoot }}/index.html
+   - name: copy site file to remote server
+     template: src=templates/index.j2 dest={{ doc_root }}/index.html 
 
    - name: Deploy configuration file
      template: src=templates/httpd.js dest=/etc/httpd/conf/httpd.conf
