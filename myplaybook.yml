@@ -8,7 +8,9 @@
     protocol: http
     ServerName: localhost:80
     doc_root: /var/www/html
-  var_prompt:
+  var:
+    : 
+  
     
 
   tasks:
